@@ -2,6 +2,7 @@ import json
 import os
 from googlemaps import Client as GoogleMaps
 import boto3
+import logging
 
 # Initialize Google Maps client
 gmaps = GoogleMaps(key=os.getenv('GOOGLE_MAPS_API_KEY'))
@@ -29,6 +30,9 @@ def lambda_handler(event, context):
         'score': score,
         'distance': distance
     })
+
+    logging.info(f"Player ID: {body['player_id']}, Distance: {
+                 distance}, Score: {score}")
 
     return {
         'statusCode': 200,

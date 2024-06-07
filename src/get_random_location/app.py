@@ -2,6 +2,7 @@ import json
 import random
 import os
 from googlemaps import Client as GoogleMaps
+import logging
 
 # Initialize Google Maps client
 gmaps = GoogleMaps(key=os.getenv('GOOGLE_MAPS_API_KEY'))
@@ -19,6 +20,9 @@ def lambda_handler(event, context):
     # Get a Street View image URL
     street_view_url = gmaps.streetview(location=(latitude, longitude), size=(
         600, 400), key=os.getenv('GOOGLE_MAPS_API_KEY'))
+
+    logging.info(f"Generated coordinates: latitude={
+                 latitude}, longitude={longitude}")
 
     return {
         'statusCode': 200,

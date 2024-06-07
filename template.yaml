@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  GetRandomLocationFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/get_random_location/app.lambda_handler
+      Runtime: python3.12
+      MemorySize: 128
+      Timeout: 30
+      Environment:
+        Variables:
+          GOOGLE_MAPS_API_KEY: !Ref GoogleMapsApiKey
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /random-location
+            Method: get
+  
+  SubmitGuessFunction:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: src/submit_guess/app.lambda_handler
+      Runtime: python3.12
+      MemorySize: 128
+      Timeout: 30
+      Environment:
+        Variables:
+          GOOGLE_MAPS_API_KEY: !Ref GoogleMapsApiKey
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /submit-guess
+            Method: post
+
+Parameters:
+  GoogleMapsApiKey:
+    Type: String
+    Description: Google Maps API Key
+
+Outputs:
+  GetRandomLocationApi:
+    Description: "API endpoint for getting a random location"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/random-location"
+
+  SubmitGuessApi:
+    Description: "API endpoint for submitting a guess"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/submit-guess"
